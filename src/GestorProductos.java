@@ -194,6 +194,7 @@ public class GestorProductos extends JFrame {
 
         JButton btnEliminar = new JButton("Eliminar");
         JButton btnSinStock = new JButton("Sin stock");
+        JButton btnStockBajo = new JButton("Stock bajo");
 
 
         // ====================================================
@@ -241,6 +242,10 @@ public class GestorProductos extends JFrame {
         mostrarProductosSinStock();
         });
 
+        btnStockBajo.addActionListener(e -> {
+            mostrarProductosBajoStock();
+        });
+
         // ====================================================
         // PANEL INFERIOR
         // ====================================================
@@ -253,7 +258,7 @@ public class GestorProductos extends JFrame {
 
         panelBotones.add(btnEliminar);
         panelBotones.add(btnSinStock);
-
+        panelBotones.add(btnStockBajo);
         panelInferior.add(
         panelBotones,
         BorderLayout.WEST
@@ -312,6 +317,26 @@ public class GestorProductos extends JFrame {
     );
 }
 
+        //Botón mostrar stock bajo
+        private void mostrarProductosBajoStock() {
+    
+    ordenador.setRowFilter(
+        new RowFilter<DefaultTableModel, Integer>() {
+            
+            @Override
+            public boolean include(
+                Entry<? extends DefaultTableModel, 
+                      ? extends Integer> entrada) {
+                
+                int stock = Integer.parseInt(
+                    entrada.getStringValue(2)
+                );
+                
+                return stock < 10 && stock > 0; //muestra productos con stock menor a 10 y mayor a 0
+            }
+        }
+    );
+}
 
     // ========================================================
     // AGREGAR PRODUCTO
