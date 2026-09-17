@@ -3,6 +3,7 @@ import javax.swing.*;
 
 // Importamos DefaultTableModel para administrar los datos de la JTable.
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 // Importamos clases para organizar los componentes gráficos.
 import java.awt.*;
@@ -42,6 +43,7 @@ public class GestorProductos extends JFrame {
 
     // DefaultTableModel administra las filas y columnas.
     private DefaultTableModel modelo;
+    private TableRowSorter<DefaultTableModel> ordenador;
 
 
     // ========================================================
@@ -178,6 +180,8 @@ public class GestorProductos extends JFrame {
 
         // Creamos la tabla utilizando nuestro modelo.
         tabla = new JTable(modelo);
+        ordenador = new TableRowSorter<>(modelo);
+        tabla.setRowSorter(ordenador);
 
         // JScrollPane permite desplazarnos si hay muchas filas.
         JScrollPane scrollTabla =
@@ -189,6 +193,7 @@ public class GestorProductos extends JFrame {
         // ====================================================
 
         JButton btnEliminar = new JButton("Eliminar");
+        JButton btnSinStock = new JButton("Sin stock");
 
 
         // ====================================================
@@ -232,6 +237,9 @@ public class GestorProductos extends JFrame {
             eliminarProducto();
         });
 
+        btnSinStock.addActionListener(e -> {
+        mostrarProductosSinStock();
+        });
 
         // ====================================================
         // PANEL INFERIOR
@@ -241,9 +249,14 @@ public class GestorProductos extends JFrame {
                 new JPanel(new BorderLayout());
 
         // Botón a la izquierda.
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+        panelBotones.add(btnEliminar);
+        panelBotones.add(btnSinStock);
+
         panelInferior.add(
-                btnEliminar,
-                BorderLayout.WEST
+        panelBotones,
+        BorderLayout.WEST
         );
 
         // Total a la derecha.
@@ -278,6 +291,26 @@ public class GestorProductos extends JFrame {
                 BorderLayout.SOUTH
         );
     }
+
+        private void mostrarProductosSinStock() {
+
+        ordenador.setRowFilter(
+            new RowFilter<DefaultTableModel, Integer>() {
+
+                @Override
+                public boolean include(
+                        Entry<? extends DefaultTableModel,
+                                ? extends Integer> entrada) {
+
+                    int stock = Integer.parseInt(
+                            entrada.getStringValue(2)
+                    );
+
+                    return stock == 0;
+                }
+            }
+    );
+}
 
 
     // ========================================================
